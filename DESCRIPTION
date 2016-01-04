@@ -1,0 +1,11 @@
+Package: eliothweather
+Type: Package
+Title: Get, Transform and Visualize Wether Data 
+Version: 0.1
+Date: 2016-01-04
+Author: person("Felix", "Pouchain", email = "f.pouchain@elioth.fr", role = c("aut", "cre"))
+Description: Solar Radiation, Heating and Cooling Degree Days calculations
+License: MIT
+LazyData: TRUE
+Imports:
+	jsonlite
