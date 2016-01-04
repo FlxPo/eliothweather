@@ -3,9 +3,9 @@ library(lubridate)
 library(zoo)
 
 data_path = "D:/DATA/f.pouchain/Desktop/ICADE/data/weather"
-dt = fread(file.path(data_path, "ForecastIO_Aubervilliers_2012-01-01_2014-12-31.csv"))
+dt = data.table::fread(file.path(data_path, "ForecastIO_Aubervilliers_2012-01-01_2014-12-31.csv"))
 
-dt[, time := fast_strptime(time, "%Y-%m-%d %H:%M:%S", tz = "CET")]
+dt[, time := lubridate::fast_strptime(time, "%Y-%m-%d %H:%M:%S", tz = "CET")]
 dt[, year_month := format(time, "%Y-%m")]
 
 dt = dt[year_month != "2015-01"]
@@ -38,7 +38,7 @@ mean_temp = dt[, list(mean_temp = mean(temperature),
                by = "year_month"]
 
 setnames(mean_temp, c("year_month", "mean_temp", "cdd", "hdd"))
-mean_temp[, month := format(fast_strptime(year_month, format = "%Y-%m"), "%m")]
+mean_temp[, month := format(lubridate::fast_strptime(year_month, format = "%Y-%m"), "%m")]
 
 temp_2015 = mean_temp[, list(year_month = paste0("2015-",month),
                              mean_temp = mean(mean_temp),
@@ -50,8 +50,8 @@ mean_temp = rbind(mean_temp, temp_2015)
 
 
 
-temp_2030 = fread("D:/DATA/f.pouchain/Desktop/ICADE/data/weather/ICADE_Parc_Porte_Paris-hour_HEURE_2030A2.txt")
-temp_2050 = fread("D:/DATA/f.pouchain/Desktop/ICADE/data/weather/ICADE_Parc_Porte_Paris-hour_HEURE_2050A2.txt")
+temp_2030 = data.table::fread("D:/DATA/f.pouchain/Desktop/ICADE/data/weather/ICADE_Parc_Porte_Paris-hour_HEURE_2030A2.txt")
+temp_2050 = data.table::fread("D:/DATA/f.pouchain/Desktop/ICADE/data/weather/ICADE_Parc_Porte_Paris-hour_HEURE_2050A2.txt")
 
 temp_2050[, T16 := (Ta - 16)/(10-16)]
 plot(temp_2050$T16, type = 'l')
@@ -88,27 +88,27 @@ mean_temp = rbind(mean_temp, temp_2030, temp_2050)
 
 
 # degree_days = merge(cdd, hdd, by = "year_month")
-# 
+#
 # setwd(data_path)
 # write.table(degree_days, "degree_days.csv", sep = ",", row.names = F)
-# 
-# 
-# 
-# 
+#
+#
+#
+#
 # C = fread("C_test.csv")
 # C = as.data.table(t(C))
 # setnames(C, "C")
 # d.temp = cbind(mean_temp, C)
 
 
-mean_temp[, year := format(fast_strptime(year_month, format = "%Y-%m"), "%Y")]
-mean_temp[, month := format(fast_strptime(year_month, format = "%Y-%m"), "%m")]
+mean_temp[, year := format(lubridate::fast_strptime(year_month, format = "%Y-%m"), "%Y")]
+mean_temp[, month := format(lubridate::fast_strptime(year_month, format = "%Y-%m"), "%m")]
 
-mean_temp.d = dcast(mean_temp, month ~ year, value.var = "mean_temp")
+mean_temp.d = data.table::dcast(mean_temp, month ~ year, value.var = "mean_temp")
 mean_temp.d[, `2025` := as.numeric(NA)]
 mean_temp.d[, `2035` := as.numeric(NA)]
 
-mean_temp = melt(mean_temp.d, id.vars = "month", variable.name = "year", value.name = "mean_temp")
+mean_temp = data.table::melt(mean_temp.d, id.vars = "month", variable.name = "year", value.name = "mean_temp")
 mean_temp[, mean_temp := na.approx(mean_temp, x = as.numeric(levels(year))[year], xout = as.numeric(levels(year))[year]), by = month]
 
 mean_temp[, sup_13 := ifelse(mean_temp - 13 > 0, mean_temp - 13, 0)]

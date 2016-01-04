@@ -1,7 +1,5 @@
 
-get_forecastIO = function(lon, lat, from, to, location_name = NULL, variables = c("time", "pressure", "temperature", "humidity", "windSpeed", "windBearing")) {
-
-  api_key = "80d8c58ddd476fca86d34988c18e7f52"
+get_forecastIO = function(lon, lat, from, to, api_key, variables = c("time", "pressure", "temperature", "humidity", "windSpeed", "windBearing")) {
 
   # Time frame definition
   date_list = seq(as.Date(from), as.Date(to), by = "day")
@@ -27,11 +25,13 @@ get_forecastIO = function(lon, lat, from, to, location_name = NULL, variables = 
   }
 
   # Format data
-  data$time <- as.POSIXlt(data$time, origin = "1970-01-01")
+  data$time = as.POSIXlt(data$time, origin = "1970-01-01")
 
   # Filter dimensions (for available dimensions, see : https://developer.forecast.io/docs/v2)
-  data = data[,variables]
+  data = data[, variables]
 
   closeAllConnections()
+
+  return(data)
 
 }

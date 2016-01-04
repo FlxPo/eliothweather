@@ -8,4 +8,7 @@ Description: Solar Radiation, Heating and Cooling Degree Days calculations
 License: MIT
 LazyData: TRUE
 Imports:
-	jsonlite
+	jsonlite,
+	data.table,
+	zoo,
+	lubridate
